@@ -6,6 +6,8 @@ udp_ser.c: the source file of the server in udp transmission
 
 void str_ser(int sockfd, struct sockaddr *addr, int addrlen);             // transmitting and receiving function
 
+void compareFiles();	// check if the file received is correct by comparing with original
+
 int main(void)
 {
 	int sockfd, ret;
@@ -33,6 +35,7 @@ int main(void)
 	str_ser(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr_in));                //receive packet and response
   
 	close(sockfd);
+	compareFiles();
 	exit(0);
 }
 
@@ -81,3 +84,61 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 	fclose(fp);
 	printf("a file has been successfully received!\nthe total data received is %d bytes\n", (int)lseek);
 }
+
+void compareFiles() 
+{ 
+	FILE *fp1;
+	FILE *fp2;
+	
+	if((fp1 = fopen ("myfile.txt","r+t")) == NULL)
+	{
+		printf("File fp1 doesn't exit\n");
+		exit(0);
+	}
+	
+	if((fp2 = fopen ("myUDPreceive.txt","r+t")) == NULL)
+	{
+		printf("File fp2 doesn't exit\n");
+		exit(0);
+	}
+	
+    // fetching character of two file 
+    // in two variable ch1 and ch2 
+    char ch1 = getc(fp1); 
+    char ch2 = getc(fp2); 
+  
+    // error keeps track of number of errors 
+    // pos keeps track of position of errors 
+    // line keeps track of error line 
+    int error = 0, pos = 0, line = 1; 
+  
+    // iterate loop till end of file 
+    while (ch1 != EOF && ch2 != EOF) 
+    { 
+        pos++; 
+  
+        // if both variable encounters new 
+        // line then line variable is incremented 
+        // and pos variable is set to 0 
+        if (ch1 == '\n' && ch2 == '\n') 
+        { 
+            line++; 
+            pos = 0; 
+        } 
+  
+        // if fetched data is not equal then 
+        // error is incremented 
+        if (ch1 != ch2) 
+        { 
+            error++; 
+            printf("Line Number : %d \tError"
+               " Position : %d \n", line, pos); 
+        } 
+  
+        // fetching character until end of file 
+        ch1 = getc(fp1); 
+        ch2 = getc(fp2); 
+    } 
+  
+    printf("Total Errors : %d\t", error); 
+} 
