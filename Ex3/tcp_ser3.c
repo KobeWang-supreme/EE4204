@@ -93,13 +93,14 @@ void str_ser(int sockfd)
 		}
 		memcpy((buf+lseek), recvs, n);
 		lseek += n;
-	}
-	ack.num = 1;
-	ack.len = 0;
-	if ((n = send(sockfd, &ack, 2, 0))==-1)
-	{
-			printf("send error!");								//send the ack
-			exit(1);
+		ack.num = 1;
+		ack.len = 0;
+		if ((n = send(sockfd, &ack, 2, 0))==-1)
+		{
+				printf("send error!");								//send the ack
+				exit(1);
+		}
+
 	}
 	if ((fp = fopen ("myTCPreceive.txt","wt")) == NULL)
 	{

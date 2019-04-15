@@ -115,14 +115,16 @@ float str_cli(FILE *fp, int sockfd, long *len)
 			exit(1);
 		}
 		ci += slen;
+		
+		if ((n= recv(sockfd, &ack, 2, 0))==-1)                                   //receive the ack
+		{
+			printf("error when receiving\n");
+			exit(1);
+		}
+		if (ack.num != 1|| ack.len != 0)
+			printf("error in transmission\n");
+
 	}
-	if ((n= recv(sockfd, &ack, 2, 0))==-1)                                   //receive the ack
-	{
-		printf("error when receiving\n");
-		exit(1);
-	}
-	if (ack.num != 1|| ack.len != 0)
-		printf("error in transmission\n");
 	gettimeofday(&recvt, NULL);
 	*len= ci;                                                         //get current time
 	tv_sub(&recvt, &sendt);                                                                 // get the whole trans time
