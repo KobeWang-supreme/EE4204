@@ -31,11 +31,14 @@ int main(void)
 		exit(1);
 	}
 	
-	printf("waiting for data\n");
-	str_ser(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr_in));                //receive packet and response
-  
+	while(1) {
+		printf("waiting for data\n");
+		str_ser(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr_in));                //receive packet and response
+		compareFiles();		
+	}
+
 	close(sockfd);
-	compareFiles();
+
 	exit(0);
 }
 
@@ -140,5 +143,5 @@ void compareFiles()
         ch2 = getc(fp2); 
     } 
   
-    printf("Total Errors : %d\t", error); 
+    printf("Total Errors : %d\t \n", error); 
 } 
